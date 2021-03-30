@@ -18,6 +18,10 @@ jobs:
           command: "python slack_autoarchive.py"
 workflows:
   version: 2
+  master:
+    jobs:
+      - archive:
+          context: slack-archive
   nightly:
     triggers:
       - schedule:
