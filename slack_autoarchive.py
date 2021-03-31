@@ -182,11 +182,16 @@ This script was run from this repo: https://github.com/flypay/slack-autoarchive
                     'skip_channel_str') in channel_topic:
             return True
 
+        # Skip shared channels
+        if channel_info['channel']['is_ext_shared']:
+            return True
+
         # check the white listed channels (file / env)
         for white_listed_channel in white_listed_channels:
             wl_channel_name = white_listed_channel.strip('#')
             if wl_channel_name in channel['name']:
                 return True
+
         return False
 
     def send_channel_message(self, channel_id, message):
