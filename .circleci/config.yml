@@ -6,7 +6,7 @@ jobs:
         environment:
           DRY_RUN: "true"
           DAYS_INACTIVE: "30"
-          WHITELIST_KEYWORDS: "pos-certifications,security,all-hands,highfives,service-status,-office,trb-,sqd-,gld-,ask-a-coach,finance,hr,chatops,secops,wellbeing,lang-,signals-,ext-,alerts-"
+          WHITELIST_KEYWORDS: "security,all-hands,highfives,service-status,-office,trb-,sqd-,gld-,ask-a-coach,finance,hr,chatops,secops,wellbeing,lang-,signals-,ext-,alerts-"
     description: Archives channels on Slack that are older than 10 days
     steps:
       - checkout
