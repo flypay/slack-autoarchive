@@ -48,7 +48,7 @@ class ChannelReaper():
 This channel has had no activity for %d days. It is being auto-archived.
 If you feel this is a mistake you can <https://get.slack.help/hc/en-us/articles/201563847-Archive-a-channel#unarchive-a-channel|unarchive this channel>.
 This will bring it back at any point. In the future, you can add '%%noarchive' to your channel topic or purpose to avoid being archived.
-This script was run from this repo: https://github.com/Symantec/slack-autoarchive
+This script was run from this repo: https://github.com/flypay/slack-autoarchive
 """ % self.settings.get('days_inactive')
         alerts = {'channel_template': archive_msg}
         if os.path.isfile('templates.json'):
@@ -101,11 +101,18 @@ This script was run from this repo: https://github.com/Symantec/slack-autoarchiv
         return None
 
     def get_all_channels(self):
-        """ Get a list of all non-archived channels from slack channels.list. """
+        """ Get a list of all non-archived channels from slack conversations.list. """
         payload = {'exclude_archived': 1}
         api_endpoint = 'conversations.list'
-        channels = self.slack_api_http(api_endpoint=api_endpoint,
-                                       payload=payload)['channels']
+        resp = self.slack_api_http(api_endpoint=api_endpoint,
+                                       payload=payload)
+        channels = resp['channels']
+        while resp['response_metadata']['next_cursor'] != '':
+            payload['cursor'] = resp['response_metadata']['next_cursor']
+            resp = self.slack_api_http(api_endpoint=api_endpoint,
+                                       payload=payload)
+            channels = channels + resp['channels']
+
         all_channels = []
         for channel in channels:
             all_channels.append({
@@ -197,7 +204,7 @@ This script was run from this repo: https://github.com/Symantec/slack-autoarchiv
 
     def archive_channel(self, channel, alert):
         """ Archive a channel, and send alert to slack admins. """
-        api_endpoint = 'channels.archive'
+        api_endpoint = 'conversations.archive'
         stdout_message = 'Archiving channel... %s' % channel['name']
         self.logger.info(stdout_message)
 
