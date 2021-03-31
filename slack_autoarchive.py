@@ -64,11 +64,15 @@ This script was run from this repo: https://github.com/flypay/slack-autoarchive
             method='GET',
             # pylint: disable=unused-argument
             retry=True,
-            retry_delay=0):
+            retry_delay=0,
+            as_bot=False):
         """ Helper function to query the slack api and handle errors and rate limit. """
         # pylint: disable=no-member
         uri = 'https://slack.com/api/' + api_endpoint
-        payload['token'] = self.settings.get('slack_token')
+        if as_bot:
+            payload['token'] = self.settings.get('slack_bot_token')
+        else:
+            payload['token'] = self.settings.get('slack_token')
         try:
             # Force request to take at least 1 second. Slack docs state:
             # > In general we allow applications that integrate with Slack to send
@@ -205,7 +209,8 @@ This script was run from this repo: https://github.com/flypay/slack-autoarchive
         api_endpoint = 'chat.postMessage'
         self.slack_api_http(api_endpoint=api_endpoint,
                             payload=payload,
-                            method='POST')
+                            method='POST',
+                            as_bot=True)
 
     def archive_channel(self, channel, alert):
         """ Archive a channel, and send alert to slack admins. """

@@ -17,6 +17,7 @@ def get_channel_reaper_settings():
         'min_members': int(os.environ.get('MIN_MEMBERS', 0)),
         'dry_run': (os.environ.get('DRY_RUN', 'true') == 'true'),
         'slack_token': os.environ.get('SLACK_TOKEN', ''),
+        'slack_bot_token': os.environ.get('SLACK_BOT_TOKEN', ''),
         'too_old_datetime': (datetime.now() - timedelta(days=days_inactive)),
         'whitelist_keywords': os.environ.get('WHITELIST_KEYWORDS', ''),
         'skip_subtypes': {'channel_leave', 'channel_join'},
